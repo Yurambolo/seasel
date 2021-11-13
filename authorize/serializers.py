@@ -27,7 +27,7 @@ class TeacherTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         try:
             data = {}
-            request_data = request.POST
+            request_data = request.data
             if ("email" in request_data and "password" in request_data):
                 user = Teacher.objects.filter(email=request_data['email']).first()
                 if user.check_password(request_data['password']):
@@ -68,7 +68,7 @@ class AdministratorTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         try:
             data = {}
-            request_data = request.POST
+            request_data = request.data
             if ("email" in request_data and "password" in request_data):
                 user = Administrator.objects.filter(email=request_data['email']).first()
                 if user.check_password(request_data['password']):
@@ -109,7 +109,7 @@ class StudentTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         try:
             data = {}
-            request_data = request.POST
+            request_data = request.data
             if ("email" in request_data and "password" in request_data):
                 user = Student.objects.filter(email=request_data['email']).first()
                 if user.check_password(request_data['password']):
