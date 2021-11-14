@@ -107,9 +107,9 @@ class MusicListView(APIView):
                         name=m.composition.name,
                         instrument=m.composition.instrument.name,
                         author=m.composition.author,
-                        dificulty=m.composition.difficulty,
+                        difficulty=m.composition.difficulty,
                         format=m.format) for m in music]
-        return Response(jsonpickle.encode(content, unpicklable=False))
+        return Response(content)
 
 
 class MusicRepresentationView(APIView):
@@ -128,12 +128,15 @@ class MusicRecommendationView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None, program_id=None):
-        program = Program.objects.filter(id=program_id).first()
-        if not program:
+    def post(self, request, format=None):
+        data = {}
+        request_data = request.data
+        if not ("concert_id" in request_data and "student_id" in request_data):
             return HttpResponseNotFound()
+        course = Course.objects.filter(student_id=request_data['student_id']).first()
+        program = Program(concert_id=request_data['concert_id'], course=course, semester=course.semester)
+        program.save()
         music = get_recommendations(program)
         program.compositions.set(music)
         program.save()
-        content = jsonpickle.encode(music, unpicklable=False)
-        return Response(content)
+        return Response()
