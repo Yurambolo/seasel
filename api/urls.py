@@ -16,7 +16,11 @@ from .views import (
     RepetitionViewSet,
     SemesterViewSet,
     TeacherViewSet,
-    CompositionRepresentationViewSet)
+    CompositionRepresentationViewSet,
+    StudentListView,
+    StudentInfoView,
+    PossibleConcertsView,
+    StudentRepetitionsView)
 
 router = routers.DefaultRouter()
 router.register(r'schools', MusicSchoolViewSet)
@@ -37,5 +41,9 @@ urlpatterns = [
     path('music/<int:composition_representation_id>/', MusicRepresentationView.as_view()),
     path('', include(router.urls)),
     path('rest/', include('rest_framework.urls', namespace='rest_framework')),
-    path('recommend/<int:program_id>/', MusicRecommendationView.as_view()),
+    path('recommend/', MusicRecommendationView.as_view()),
+    path('teacher/students/', StudentListView.as_view()),
+    path('student/<int:student_id>/', StudentInfoView.as_view()),
+    path('student/<int:student_id>/concerts/', PossibleConcertsView.as_view()),
+    path('student/<int:student_id>/<int:composition_id>/', StudentRepetitionsView.as_view()),
 ]

@@ -1,4 +1,5 @@
 import jsonpickle
+from django.db.models import Avg
 from django.http import HttpResponseNotFound
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -140,3 +141,81 @@ class MusicRecommendationView(APIView):
         program.compositions.set(music)
         program.save()
         return Response()
+
+
+class StudentListView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        courses = Course.objects.filter(teacher_id=request.user.id)
+        content = [dict(studentId=c.student.id,
+                        name=c.student.name,
+                        semester=c.semester.number,
+                        instrument=c.instrument.name) for c in courses]
+        return Response(content)
+
+
+def get_avg_mark(course_id, composition_id):
+    return Repetition.objects.filter(course_id=course_id, composition_id=composition_id).aggregate(Avg('mark'))[
+        'mark__avg']
+
+
+class StudentInfoView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None, student_id=None):
+        student = Student.objects.filter(id=student_id).get()
+        programs = list(Program.objects.filter(course__student_id=student_id))
+        concerts = []
+        for program in programs:
+            concerts.append(dict(
+                date=str(program.concert.date),
+                compositions=[
+                    dict(
+                        compositionId=composition.id,
+                        name=composition.name,
+                        author=composition.author,
+                        difficulty=composition.difficulty,
+                        averageMark=get_avg_mark(program.course_id, composition.id)
+                    )
+                    for composition in list(program.compositions.get_queryset())
+                ]
+            ))
+
+            content = dict(name=student.name,
+                           concerts=concerts)
+            return Response(content)
+
+
+class PossibleConcertsView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None, student_id=None):
+        programs = list(Program.objects.filter(course__student_id=student_id))
+        concerts = list(Concert.objects.exclude(program__in=programs))
+        content = [
+            dict(
+                concertId=concert.id,
+                date=concert.date
+            )
+            for concert in concerts]
+        return Response(content)
+
+
+class StudentRepetitionsView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None, student_id=None, composition_id=None):
+        repetitions = Repetition.objects.filter(course__student_id=student_id, composition_id=composition_id)
+        content = [
+            dict(
+                dateTime=repetition.datetime,
+                mark=repetition.mark,
+                instrument=repetition.course.instrument.name,
+            )
+            for repetition in repetitions]
+        return Response(content)

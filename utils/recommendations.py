@@ -5,11 +5,11 @@ from typing import List
 
 from api.models import Program, Composition
 
-MAX_DIFFICULTY_DELTA = 2
+global MAX_DIFFICULTY_DELTA
 
 
 def can_add(comp, avg):
-    return abs(comp.difficulty - avg) < MAX_DIFFICULTY_DELTA
+    return abs(comp.difficulty - avg) <= globals()['MAX_DIFFICULTY_DELTA']
 
 
 def delete_from_frequency(frequency, composition):
@@ -73,7 +73,7 @@ def get_frequency_list(programs: List[Program]):
     return reversed
 
 
-def get_recommendations(program: Program, MAX_DIFFICULTY_DELTA=MAX_DIFFICULTY_DELTA):
+def get_recommendations(program: Program):
     concert = program.concert
     other_programs = Program.objects.filter(concert_id=concert.id).all()
     composition_count = program.semester.composition_count
@@ -81,6 +81,7 @@ def get_recommendations(program: Program, MAX_DIFFICULTY_DELTA=MAX_DIFFICULTY_DE
     min_difficulty = program.semester.min_difficulty
 
     avg_difficulty = (max_difficulty + min_difficulty) / 2 / composition_count
+    globals()['MAX_DIFFICULTY_DELTA'] = max_difficulty - min_difficulty
     frequency = get_frequency_list(other_programs)
     music_list = []
 
@@ -88,7 +89,10 @@ def get_recommendations(program: Program, MAX_DIFFICULTY_DELTA=MAX_DIFFICULTY_DE
         try:
             music_list, avg_difficulty = find_best(music_list, composition_count, avg_difficulty, frequency)
             frequency = delete_from_frequency(frequency, music_list[-1])
+            globals()['MAX_DIFFICULTY_DELTA'] = globals()['MAX_DIFFICULTY_DELTA'] - (
+                        globals()['MAX_DIFFICULTY_DELTA'] - (max_difficulty - min_difficulty) / 2) / (
+                                                            composition_count - len(music_list))
         except:
-            MAX_DIFFICULTY_DELTA += 1
+            globals()['MAX_DIFFICULTY_DELTA'] += 1
 
     return music_list
