@@ -217,5 +217,6 @@ class StudentRepetitionsView(APIView):
                 mark=repetition.mark,
                 instrument=repetition.course.instrument.name,
             )
-            for repetition in repetitions]
+            for repetition in repetitions
+        ]
         return Response(content)
