@@ -17,8 +17,8 @@ class UserSerializer(serializers.ModelSerializer):
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
 
-    password = serializers.CharField(write_only=True, required=False, validators=[validate_password])
-    password2 = serializers.CharField(write_only=True, required=False,)
+    password = serializers.CharField(write_only=True, required=False, allow_blank=True, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
     class Meta:
         model = User
