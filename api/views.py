@@ -136,12 +136,12 @@ class MusicRecommendationView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, format=None):
+    def post(self, request, format=None, student_id=None):
         data = {}
         request_data = request.data
-        if not ("concert_id" in request_data and "student_id" in request_data):
+        if not ("concert_id" in request_data):
             return HttpResponseNotFound()
-        course = Course.objects.filter(student_id=request_data['student_id']).first()
+        course = Course.objects.filter(student_id=request.user.id).first()
         program = Program(concert_id=request_data['concert_id'], course=course, semester=course.semester)
         program.save()
         music = get_recommendations(program)
