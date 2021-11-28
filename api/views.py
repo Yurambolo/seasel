@@ -191,9 +191,9 @@ class StudentInfoView(APIView):
                 ]
             ))
 
-            content = dict(name=student.name,
-                           concerts=concerts)
-            return Response(content)
+        content = dict(name=student.name,
+                       concerts=concerts)
+        return Response(content)
 
 
 class PossibleConcertsView(APIView):
