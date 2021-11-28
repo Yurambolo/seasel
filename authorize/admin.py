@@ -1,11 +1,9 @@
 from django.contrib import admin
 from api.models import *
-from authorize.models import Administrator
+from authorize.models import User
 
 admin.site.register(MusicSchool)
-admin.site.register(Administrator)
-admin.site.register(Teacher)
-admin.site.register(Student)
+admin.site.register(User)
 admin.site.register(Semester)
 admin.site.register(Instrument)
 admin.site.register(Course)

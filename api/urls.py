@@ -6,8 +6,7 @@ from .views import (
     MusicRepresentationView,
     MusicRecommendationView,
     MusicSchoolViewSet,
-    StudentViewSet,
-    AdministratorViewSet,
+    UserViewSet,
     CompositionViewSet,
     ConcertViewSet,
     CourseViewSet,
@@ -15,7 +14,6 @@ from .views import (
     ProgramViewSet,
     RepetitionViewSet,
     SemesterViewSet,
-    TeacherViewSet,
     CompositionRepresentationViewSet,
     StudentListView,
     StudentInfoView,
@@ -24,9 +22,7 @@ from .views import (
 
 router = routers.DefaultRouter()
 router.register(r'schools', MusicSchoolViewSet)
-router.register(r'students', StudentViewSet)
-router.register(r'teachers', TeacherViewSet)
-router.register(r'administrators', AdministratorViewSet)
+router.register(r'users', UserViewSet)
 router.register(r'semesters', SemesterViewSet)
 router.register(r'instruments', InstrumentViewSet)
 router.register(r'concerts', ConcertViewSet)

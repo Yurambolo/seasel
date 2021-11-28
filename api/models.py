@@ -1,5 +1,5 @@
 from django.db import models
-from authorize.models import MusicSchool, Student, Teacher
+from authorize.models import MusicSchool, User
 
 
 class Semester(models.Model):
@@ -48,8 +48,8 @@ class CompositionRepresentation(models.Model):
 
 
 class Course(models.Model):
-    student = models.ForeignKey(Student, models.CASCADE)
-    teacher = models.ForeignKey(Teacher, models.CASCADE)
+    student = models.ForeignKey(User, models.CASCADE)
+    teacher = models.ForeignKey(User, models.CASCADE, related_name='teacher')
     semester = models.ForeignKey(Semester, models.CASCADE)
     instrument = models.ForeignKey(Instrument, models.CASCADE)
 

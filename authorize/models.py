@@ -4,6 +4,8 @@ from django.contrib.auth.models import (
 from django.db import models
 from rest_framework_simplejwt.tokens import RefreshToken
 
+ROLE_CHOICES = [('ADMIN', 'ADMIN'), ('TEACHER', 'TEACHER'), ('STUDENT', 'STUDENT')]
+
 
 class MusicSchool(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -38,10 +40,11 @@ class UserManager(BaseUserManager):
         return user
 
 
-class Administrator(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True, db_index=True)
     name = models.CharField(max_length=255)
     music_school = models.ForeignKey(MusicSchool, on_delete=models.CASCADE)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True)
 
     user_permissions = None
     groups = None
@@ -50,7 +53,7 @@ class Administrator(AbstractBaseUser, PermissionsMixin):
     updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name', 'music_school']
+    REQUIRED_FIELDS = ['name', 'music_school', 'role']
 
     objects = UserManager()
 
@@ -65,55 +68,82 @@ class Administrator(AbstractBaseUser, PermissionsMixin):
         }
 
 
-class Student(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(max_length=255, unique=True, db_index=True)
-    name = models.CharField(max_length=255)
-    music_school = models.ForeignKey(MusicSchool, on_delete=models.CASCADE)
-
-    user_permissions = None
-    groups = None
-    is_staff = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name', 'music_school']
-
-    objects = UserManager()
-
-    def __str__(self):
-        return self.name
-
-    def tokens(self):
-        refresh = RefreshToken.for_user(self)
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token)
-        }
-
-
-class Teacher(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(max_length=255, unique=True, db_index=True)
-    name = models.CharField(max_length=255)
-    music_school = models.ForeignKey(MusicSchool, on_delete=models.CASCADE)
-
-    user_permissions = None
-    groups = None
-    is_staff = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name', 'music_school']
-
-    objects = UserManager()
-
-    def __str__(self):
-        return self.name
-
-    def tokens(self):
-        refresh = RefreshToken.for_user(self)
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token)
-        }
+# class Administrator(AbstractBaseUser, PermissionsMixin):
+#     email = models.EmailField(max_length=255, unique=True, db_index=True)
+#     name = models.CharField(max_length=255)
+#     music_school = models.ForeignKey(MusicSchool, on_delete=models.CASCADE)
+#
+#     user_permissions = None
+#     groups = None
+#     is_staff = models.BooleanField(default=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#
+#     USERNAME_FIELD = 'email'
+#     REQUIRED_FIELDS = ['name', 'music_school']
+#
+#     objects = UserManager()
+#
+#     def __str__(self):
+#         return self.name
+#
+#     def tokens(self):
+#         refresh = RefreshToken.for_user(self)
+#         return {
+#             'refresh': str(refresh),
+#             'access': str(refresh.access_token)
+#         }
+#
+#
+# class Student(AbstractBaseUser, PermissionsMixin):
+#     email = models.EmailField(max_length=255, unique=True, db_index=True)
+#     name = models.CharField(max_length=255)
+#     music_school = models.ForeignKey(MusicSchool, on_delete=models.CASCADE)
+#
+#     user_permissions = None
+#     groups = None
+#     is_staff = models.BooleanField(default=False)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#
+#     USERNAME_FIELD = 'email'
+#     REQUIRED_FIELDS = ['name', 'music_school']
+#
+#     objects = UserManager()
+#
+#     def __str__(self):
+#         return self.name
+#
+#     def tokens(self):
+#         refresh = RefreshToken.for_user(self)
+#         return {
+#             'refresh': str(refresh),
+#             'access': str(refresh.access_token)
+#         }
+#
+#
+# class Teacher(AbstractBaseUser, PermissionsMixin):
+#     email = models.EmailField(max_length=255, unique=True, db_index=True)
+#     name = models.CharField(max_length=255)
+#     music_school = models.ForeignKey(MusicSchool, on_delete=models.CASCADE)
+#
+#     user_permissions = None
+#     groups = None
+#     is_staff = models.BooleanField(default=False)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#
+#     USERNAME_FIELD = 'email'
+#     REQUIRED_FIELDS = ['name', 'music_school']
+#
+#     objects = UserManager()
+#
+#     def __str__(self):
+#         return self.name
+#
+#     def tokens(self):
+#         refresh = RefreshToken.for_user(self)
+#         return {
+#             'refresh': str(refresh),
+#             'access': str(refresh.access_token)
+#         }

@@ -19,23 +19,9 @@ class MusicSchoolViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
-class StudentViewSet(viewsets.ModelViewSet):
-    queryset = Student.objects.all().order_by('name')
-    serializer_class = StudentSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
-    permission_classes = [IsAuthenticated]
-
-
-class TeacherViewSet(viewsets.ModelViewSet):
-    queryset = Teacher.objects.all().order_by('name')
-    serializer_class = TeacherSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
-    permission_classes = [IsAuthenticated]
-
-
-class AdministratorViewSet(viewsets.ModelViewSet):
-    queryset = Administrator.objects.all().order_by('name')
-    serializer_class = AdministratorSerializer
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all().order_by('name')
+    serializer_class = UserSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -166,7 +152,7 @@ class StudentInfoView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None, student_id=None):
-        student = Student.objects.filter(id=student_id).get()
+        student = User.objects.filter(id=student_id).get()
         programs = list(Program.objects.filter(course__student_id=student_id))
         concerts = []
         for program in programs:
