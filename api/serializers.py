@@ -19,7 +19,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True, required=False, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=False,)
-    # music_school = serializers.IntegerField(required=True,)
 
     class Meta:
         model = User
@@ -29,6 +28,11 @@ class UserSerializer(serializers.ModelSerializer):
             'music_school': {'required': True},
             'role': {'required': True},
         }
+
+    def to_representation(self, instance):
+        representation = super(UserSerializer, self).to_representation(instance)
+        representation['music_school'] = MusicSchoolSerializer(instance.music_school).data
+        return representation
 
     def validate(self, attrs):
         if 'password' in attrs and attrs['password'] != attrs['password2']:
@@ -64,11 +68,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SemesterSerializer(serializers.HyperlinkedModelSerializer):
-    music_school = MusicSchoolSerializer(many=False, read_only=True)
+    # music_school = MusicSchoolSerializer(many=False, read_only=True)
 
     class Meta:
         model = Semester
         fields = ['id', 'music_school', 'number', 'composition_count', 'max_difficulty', 'min_difficulty']
+
+    def to_representation(self, instance):
+        representation = super(SemesterSerializer, self).to_representation(instance)
+        representation['music_school'] = MusicSchoolSerializer(instance.music_school).data
+        return representation
 
 
 class InstrumentSerializer(serializers.HyperlinkedModelSerializer):
@@ -78,55 +87,91 @@ class InstrumentSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ConcertSerializer(serializers.HyperlinkedModelSerializer):
-    music_school = MusicSchoolSerializer(many=False, read_only=True)
+    # music_school = MusicSchoolSerializer(many=False, read_only=True)
 
     class Meta:
         model = Concert
         fields = ['id', 'music_school', 'date']
 
+    def to_representation(self, instance):
+        representation = super(ConcertSerializer, self).to_representation(instance)
+        representation['music_school'] = MusicSchoolSerializer(instance.music_school).data
+        return representation
+
 
 class CompositionSerializer(serializers.HyperlinkedModelSerializer):
-    instrument = InstrumentSerializer(many=False, read_only=True)
+    # instrument = InstrumentSerializer(many=False, read_only=True)
 
     class Meta:
         model = Composition
         fields = ['id', 'name', 'instrument', 'author', 'difficulty']
 
+    def to_representation(self, instance):
+        representation = super(CompositionSerializer, self).to_representation(instance)
+        representation['instrument'] = InstrumentSerializer(instance.instrument).data
+        return representation
+
 
 class CompositionRepresentationSerializer(serializers.HyperlinkedModelSerializer):
-    composition = CompositionSerializer(many=False, read_only=True)
+    # composition = CompositionSerializer(many=False, read_only=True)
 
     class Meta:
         model = CompositionRepresentation
         fields = ['id', 'composition', 'format', 'sheme']
 
+    def to_representation(self, instance):
+        representation = super(CompositionRepresentationSerializer, self).to_representation(instance)
+        representation['composition'] = CompositionSerializer(instance.composition).data
+        return representation
+
 
 class CourseSerializer(serializers.HyperlinkedModelSerializer):
-    student = UserSerializer(many=False, read_only=True)
-    teacher = UserSerializer(many=False, read_only=True)
-    semester = SemesterSerializer(many=False, read_only=True)
-    instrument = InstrumentSerializer(many=False, read_only=True)
+    # student = UserSerializer(many=False, read_only=True)
+    # teacher = UserSerializer(many=False, read_only=True)
+    # semester = SemesterSerializer(many=False, read_only=True)
+    # instrument = InstrumentSerializer(many=False, read_only=True)
 
     class Meta:
         model = Course
         fields = ['id', 'student', 'teacher', 'semester', 'instrument']
 
+    def to_representation(self, instance):
+        representation = super(CourseSerializer, self).to_representation(instance)
+        representation['student'] = UserSerializer(instance.student).data
+        representation['teacher'] = UserSerializer(instance.teacher).data
+        representation['semester'] = SemesterSerializer(instance.semester).data
+        representation['instrument'] = InstrumentSerializer(instance.instrument).data
+        return representation
+
 
 class ProgramSerializer(serializers.HyperlinkedModelSerializer):
-    concert = ConcertSerializer(many=False, read_only=True)
-    course = CourseSerializer(many=False, read_only=True)
-    semester = SemesterSerializer(many=False, read_only=True)
-    compositions = CompositionSerializer(many=True, read_only=True)
+    # concert = ConcertSerializer(many=False, read_only=True)
+    # course = CourseSerializer(many=False, read_only=True)
+    # semester = SemesterSerializer(many=False, read_only=True)
+    # compositions = CompositionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Program
-        fields = ['id', 'concert', 'course', 'semester', 'compositions']
+        fields = ['id', 'concert', 'course', 'semester']
+
+    def to_representation(self, instance):
+        representation = super(ProgramSerializer, self).to_representation(instance)
+        representation['concert'] = ConcertSerializer(instance.concert).data
+        representation['course'] = CourseSerializer(instance.course).data
+        representation['semester'] = SemesterSerializer(instance.semester).data
+        return representation
 
 
 class RepetitionSerializer(serializers.HyperlinkedModelSerializer):
-    course = CourseSerializer(many=False, read_only=True)
-    composition = CompositionSerializer(many=False, read_only=True)
+    # course = CourseSerializer(many=False, read_only=True)
+    # composition = CompositionSerializer(many=False, read_only=True)
 
     class Meta:
         model = Repetition
         fields = ['id', 'course', 'composition', 'datetime', 'mark']
+
+    def to_representation(self, instance):
+        representation = super(RepetitionSerializer, self).to_representation(instance)
+        representation['composition'] = CompositionSerializer(instance.composition).data
+        representation['course'] = CourseSerializer(instance.course).data
+        return representation
