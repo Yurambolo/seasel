@@ -1,6 +1,5 @@
-import jsonpickle
 from django.db.models import Avg
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseBadRequest
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -126,7 +125,7 @@ class MusicRepresentationView(APIView):
 
     def get(self, request, format=None, composition_representation_id=None):
         if not composition_representation_id:
-            return HttpResponseNotFound()
+            return HttpResponseBadRequest()
         music = CompositionRepresentation.objects.filter(id=composition_representation_id).first()
         content = music.sheme
         return Response(content)
@@ -140,7 +139,7 @@ class MusicRecommendationView(APIView):
         data = {}
         request_data = request.data
         if not ("concert_id" in request_data):
-            return HttpResponseNotFound()
+            return HttpResponseBadRequest()
         course = Course.objects.filter(student_id=request.user.id).first()
         program = Program(concert_id=request_data['concert_id'], course=course, semester=course.semester)
         program.save()
