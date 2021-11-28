@@ -18,11 +18,17 @@ from .views import (
     StudentListView,
     StudentInfoView,
     PossibleConcertsView,
-    StudentRepetitionsView)
+    StudentRepetitionsView,
+    StudentViewSet,
+    AdminViewSet,
+    TeacherViewSet,)
 
 router = routers.DefaultRouter()
 router.register(r'schools', MusicSchoolViewSet)
 router.register(r'users', UserViewSet)
+router.register(r'students', StudentViewSet)
+router.register(r'admins', AdminViewSet)
+router.register(r'teachers', TeacherViewSet)
 router.register(r'semesters', SemesterViewSet)
 router.register(r'instruments', InstrumentViewSet)
 router.register(r'concerts', ConcertViewSet)

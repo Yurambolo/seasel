@@ -26,6 +26,27 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
+class StudentViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.filter(role="STUDENT").order_by('name')
+    serializer_class = UserSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class AdminViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.filter(role="ADMIN").order_by('name')
+    serializer_class = UserSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class TeacherViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.filter(role="TEACHER").order_by('name')
+    serializer_class = UserSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
 class SemesterViewSet(viewsets.ModelViewSet):
     queryset = Semester.objects.all().order_by('number')
     serializer_class = SemesterSerializer
