@@ -140,7 +140,7 @@ class MusicRecommendationView(APIView):
         request_data = request.data
         if not ("concert_id" in request_data):
             return HttpResponseBadRequest()
-        course = Course.objects.filter(student_id=request.user.id).first()
+        course = Course.objects.filter(student_id=student_id).first()
         program = Program(concert_id=request_data['concert_id'], course=course, semester=course.semester)
         program.save()
         music = get_recommendations(program)
