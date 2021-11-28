@@ -1,3 +1,6 @@
+from django.contrib.auth.password_validation import validate_password
+from rest_framework.validators import UniqueValidator
+
 from api.models import *
 from rest_framework import serializers
 
@@ -8,12 +11,56 @@ class MusicSchoolSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'name']
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    music_school = MusicSchoolSerializer(many=False, read_only=True)
+class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+
+    password = serializers.CharField(write_only=True, required=False, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=False,)
+    # music_school = serializers.IntegerField(required=True,)
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'name', 'music_school', 'role']
+        fields = ('id', 'email', 'password', 'password2', 'name', 'music_school', 'role')
+        extra_kwargs = {
+            'name': {'required': True},
+            'music_school': {'required': True},
+            'role': {'required': True},
+        }
+
+    def validate(self, attrs):
+        if 'password' in attrs and attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+        return attrs
+
+    def update(self, instance, validated_data):
+        if 'email' in validated_data:
+            instance.email = validated_data['email']
+        if 'name' in validated_data:
+            instance.name = validated_data['name']
+        if 'music_school' in validated_data:
+            instance.music_school = validated_data['music_school']
+        if 'role' in validated_data:
+            instance.role = validated_data['role']
+        if 'password' in validated_data and validated_data['password']:
+            instance.set_password(validated_data['password'])
+        instance.save()
+        return instance
+
+    def create(self, validated_data):
+        user = User.objects.create(
+            email=validated_data['email'],
+            name=validated_data['name'],
+            music_school=validated_data['music_school'],
+            role=validated_data['role'],
+        )
+
+        user.set_password(validated_data['password'])
+        user.save()
+
+        return user
 
 
 class SemesterSerializer(serializers.HyperlinkedModelSerializer):
