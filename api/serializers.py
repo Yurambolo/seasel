@@ -5,7 +5,7 @@ from api.models import *
 from rest_framework import serializers
 
 
-class MusicSchoolSerializer(serializers.HyperlinkedModelSerializer):
+class MusicSchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = MusicSchool
         fields = ['id', 'name']
@@ -67,8 +67,8 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class SemesterSerializer(serializers.HyperlinkedModelSerializer):
-    # music_school = MusicSchoolSerializer(many=False, read_only=True)
+class SemesterSerializer(serializers.ModelSerializer):
+    music_school = MusicSchoolSerializer(many=False, read_only=True)
 
     class Meta:
         model = Semester
@@ -80,13 +80,13 @@ class SemesterSerializer(serializers.HyperlinkedModelSerializer):
         return representation
 
 
-class InstrumentSerializer(serializers.HyperlinkedModelSerializer):
+class InstrumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instrument
         fields = ['id', 'name']
 
 
-class ConcertSerializer(serializers.HyperlinkedModelSerializer):
+class ConcertSerializer(serializers.ModelSerializer):
     # music_school = MusicSchoolSerializer(many=False, read_only=True)
 
     class Meta:
@@ -99,8 +99,8 @@ class ConcertSerializer(serializers.HyperlinkedModelSerializer):
         return representation
 
 
-class CompositionSerializer(serializers.HyperlinkedModelSerializer):
-    # instrument = InstrumentSerializer(many=False, read_only=True)
+class CompositionSerializer(serializers.ModelSerializer):
+    instrument = InstrumentSerializer(many=False, read_only=True)
 
     class Meta:
         model = Composition
@@ -112,7 +112,7 @@ class CompositionSerializer(serializers.HyperlinkedModelSerializer):
         return representation
 
 
-class CompositionRepresentationSerializer(serializers.HyperlinkedModelSerializer):
+class CompositionRepresentationSerializer(serializers.ModelSerializer):
     # composition = CompositionSerializer(many=False, read_only=True)
 
     class Meta:
@@ -125,7 +125,7 @@ class CompositionRepresentationSerializer(serializers.HyperlinkedModelSerializer
         return representation
 
 
-class CourseSerializer(serializers.HyperlinkedModelSerializer):
+class CourseSerializer(serializers.ModelSerializer):
     # student = UserSerializer(many=False, read_only=True)
     # teacher = UserSerializer(many=False, read_only=True)
     # semester = SemesterSerializer(many=False, read_only=True)
@@ -144,7 +144,7 @@ class CourseSerializer(serializers.HyperlinkedModelSerializer):
         return representation
 
 
-class ProgramSerializer(serializers.HyperlinkedModelSerializer):
+class ProgramSerializer(serializers.ModelSerializer):
     # concert = ConcertSerializer(many=False, read_only=True)
     # course = CourseSerializer(many=False, read_only=True)
     # semester = SemesterSerializer(many=False, read_only=True)
@@ -162,7 +162,7 @@ class ProgramSerializer(serializers.HyperlinkedModelSerializer):
         return representation
 
 
-class RepetitionSerializer(serializers.HyperlinkedModelSerializer):
+class RepetitionSerializer(serializers.ModelSerializer):
     # course = CourseSerializer(many=False, read_only=True)
     # composition = CompositionSerializer(many=False, read_only=True)
 
