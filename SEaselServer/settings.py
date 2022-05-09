@@ -142,7 +142,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=600),
 }
 
 import django_heroku
