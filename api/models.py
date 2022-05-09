@@ -75,3 +75,13 @@ class Repetition(models.Model):
 
     def __str__(self):
         return '{0} {1} {2}'.format(str(self.course), str(self.composition), str(self.datetime))
+
+
+class Feedback(models.Model):
+    user = models.ForeignKey(User, models.CASCADE)
+    mark = models.IntegerField()
+    comment = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '{0} {1}'.format(str(self.mark), self.comment or '')

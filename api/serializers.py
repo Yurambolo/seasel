@@ -175,3 +175,14 @@ class RepetitionSerializer(serializers.ModelSerializer):
         representation['composition'] = CompositionSerializer(instance.composition).data
         representation['course'] = CourseSerializer(instance.course).data
         return representation
+
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ['id', 'user', 'mark', 'comment', 'created_at']
+
+    def to_representation(self, instance):
+        representation = super(FeedbackSerializer, self).to_representation(instance)
+        representation['user'] = UserSerializer(instance.user).data
+        return representation

@@ -12,6 +12,7 @@ admin.site.register(CompositionRepresentation)
 admin.site.register(Composition)
 admin.site.register(Repetition)
 admin.site.register(Program)
+admin.site.register(Feedback)
 
 
 # from authorize.models import Administrator, Student

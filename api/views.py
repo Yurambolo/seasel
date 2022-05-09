@@ -102,6 +102,13 @@ class RepetitionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
+class FeedbackViewSet(viewsets.ModelViewSet):
+    queryset = Feedback.objects.all()
+    serializer_class = FeedbackSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
 class MusicListView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
     permission_classes = [IsAuthenticated]
