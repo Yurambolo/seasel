@@ -22,7 +22,8 @@ from .views import (
     StudentViewSet,
     AdminViewSet,
     TeacherViewSet,
-    FeedbackViewSet)
+    FeedbackViewSet,
+    CompositionFeedbacksView)
 
 router = routers.DefaultRouter()
 router.register(r'schools', MusicSchoolViewSet)
@@ -50,4 +51,5 @@ urlpatterns = [
     path('student/<int:student_id>/concerts/', PossibleConcertsView.as_view()),
     path('student/<int:student_id>/recommend/', MusicRecommendationView.as_view()),
     path('student/<int:student_id>/<int:composition_id>/', StudentRepetitionsView.as_view()),
+    path('compositions/<int:composition_id>/feedbacks/', CompositionFeedbacksView.as_view()),
 ]

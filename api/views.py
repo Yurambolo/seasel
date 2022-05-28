@@ -233,3 +233,16 @@ class StudentRepetitionsView(APIView):
             for repetition in repetitions
         ]
         return Response(content)
+
+
+class CompositionFeedbacksView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None, composition_id=None):
+        feedbacks = Feedback.objects.filter(composition_id=composition_id)
+        content = [
+            FeedbackSerializer().to_representation(feedback)
+            for feedback in feedbacks
+        ]
+        return Response(content)

@@ -180,9 +180,10 @@ class RepetitionSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = ['id', 'user', 'mark', 'comment', 'created_at']
+        fields = ['id', 'user', 'composition', 'mark', 'comment', 'created_at']
 
     def to_representation(self, instance):
         representation = super(FeedbackSerializer, self).to_representation(instance)
         representation['user'] = UserSerializer(instance.user).data
+        representation['composition'] = CompositionSerializer(instance.composition).data
         return representation

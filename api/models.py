@@ -79,6 +79,7 @@ class Repetition(models.Model):
 
 class Feedback(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
+    composition = models.ForeignKey(Composition, models.CASCADE)
     mark = models.IntegerField()
     comment = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
