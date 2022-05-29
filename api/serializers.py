@@ -1,4 +1,5 @@
 from django.contrib.auth.password_validation import validate_password
+from django.db.models import Avg
 from rest_framework.validators import UniqueValidator
 
 from api.models import *
@@ -68,7 +69,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SemesterSerializer(serializers.ModelSerializer):
-    music_school = MusicSchoolSerializer(many=False, read_only=True)
+    # music_school = MusicSchoolSerializer(many=False, read_only=True)
 
     class Meta:
         model = Semester
@@ -100,7 +101,7 @@ class ConcertSerializer(serializers.ModelSerializer):
 
 
 class CompositionSerializer(serializers.ModelSerializer):
-    instrument = InstrumentSerializer(many=False, read_only=True)
+    # instrument = InstrumentSerializer(many=False, read_only=True)
 
     class Meta:
         model = Composition
@@ -109,6 +110,8 @@ class CompositionSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super(CompositionSerializer, self).to_representation(instance)
         representation['instrument'] = InstrumentSerializer(instance.instrument).data
+        representation['avg_mark'] = Feedback.objects.filter(composition_id=instance.id).aggregate(Avg('mark'))[
+            'mark__avg']
         return representation
 
 
