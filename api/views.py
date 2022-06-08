@@ -275,10 +275,10 @@ class CreateFeedbackView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-        request.data['user'] = request.user.id
         try:
+            request.data['user_id'] = request.user.id
             feedback = FeedbackSerializer().create(request.data)
-        except:
+            feedback.save()
+            return Response()
+        except Exception as e:
             return HttpResponseBadRequest()
-        feedback.save()
-        return Response()
