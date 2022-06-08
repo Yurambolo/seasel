@@ -109,7 +109,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
-class MusicListView(APIView):
+class UserMusicListView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -122,7 +122,29 @@ class MusicListView(APIView):
                         instrument=m.composition.instrument.name,
                         author=m.composition.author,
                         difficulty=m.composition.difficulty,
-                        format=m.format) for m in music]
+                        format=m.format,
+                        avg_mark=Feedback.objects.filter(composition_id=m.composition_id).aggregate(Avg('mark'))[
+                            'mark__avg']
+                        ) for m in music]
+        return Response(content)
+
+
+class MusicListView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        music = CompositionRepresentation.objects.all()
+        content = [dict(composition_representation_id=m.id,
+                        composition_id=m.composition_id,
+                        name=m.composition.name,
+                        instrument=m.composition.instrument.name,
+                        author=m.composition.author,
+                        difficulty=m.composition.difficulty,
+                        format=m.format,
+                        avg_mark=Feedback.objects.filter(composition_id=m.composition_id).aggregate(Avg('mark'))[
+                            'mark__avg']
+                        ) for m in music]
         return Response(content)
 
 
@@ -246,3 +268,17 @@ class CompositionFeedbacksView(APIView):
             for feedback in feedbacks
         ]
         return Response(content)
+
+
+class CreateFeedbackView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        request.data['user'] = request.user.id
+        try:
+            feedback = FeedbackSerializer().create(request.data)
+        except:
+            return HttpResponseBadRequest()
+        feedback.save()
+        return Response()
