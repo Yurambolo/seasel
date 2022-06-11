@@ -291,7 +291,8 @@ class SaveRepetitionView(APIView):
 
     def post(self, request, format=None):
         try:
-            course = Course.objects.filter(student_id=request.user.id, program__compositions=request.data['composition_id']).first()
+            composition = Composition.objects.filter(id=request.data['composition_id']).first()
+            course = Course.objects.filter(student_id=request.user.id, instrument=composition.instrument).first()
             request.data['course_id'] = course.id
             repetition = RepetitionSerializer().create(request.data)
             repetition.save()
