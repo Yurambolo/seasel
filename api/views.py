@@ -297,5 +297,4 @@ class SaveRepetitionView(APIView):
             repetition.save()
             return Response()
         except Exception as e:
-            print(e)
             raise APIException(e)
