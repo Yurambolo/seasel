@@ -282,3 +282,18 @@ class CreateFeedbackView(APIView):
             return Response()
         except Exception as e:
             return HttpResponseBadRequest()
+
+
+class SaveRepetitionView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, JWTTokenUserAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        try:
+            course = Course.objects.filter(student_id=request.user.id, program__compositions=request.data['composition_id']).first()
+            request.data['course_id'] = course.id
+            repetition = RepetitionSerializer().create(request.data)
+            repetition.save()
+            return Response()
+        except Exception as e:
+            return HttpResponseBadRequest()

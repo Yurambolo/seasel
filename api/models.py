@@ -70,7 +70,7 @@ class Program(models.Model):
 class Repetition(models.Model):
     course = models.ForeignKey(Course, models.CASCADE)
     composition = models.ForeignKey(Composition, models.CASCADE)
-    datetime = models.DateTimeField()
+    datetime = models.DateTimeField(auto_now_add=True)
     mark = models.IntegerField()
 
     def __str__(self):
