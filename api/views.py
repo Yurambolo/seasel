@@ -2,6 +2,7 @@ from django.db.models import Avg
 from django.http import HttpResponseBadRequest
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -281,7 +282,7 @@ class CreateFeedbackView(APIView):
             feedback.save()
             return Response()
         except Exception as e:
-            return HttpResponseBadRequest()
+            raise APIException(e)
 
 
 class SaveRepetitionView(APIView):
@@ -296,4 +297,4 @@ class SaveRepetitionView(APIView):
             repetition.save()
             return Response()
         except Exception as e:
-            return HttpResponseBadRequest()
+            raise APIException(e)
