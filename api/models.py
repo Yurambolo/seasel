@@ -71,7 +71,7 @@ class Repetition(models.Model):
     course = models.ForeignKey(Course, models.CASCADE)
     composition = models.ForeignKey(Composition, models.CASCADE)
     datetime = models.DateTimeField(auto_now_add=True)
-    mark = models.IntegerField()
+    mark = models.FloatField()
 
     def __str__(self):
         return '{0} {1} {2}'.format(str(self.course), str(self.composition), str(self.datetime))
