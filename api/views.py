@@ -1,4 +1,4 @@
-from django.db.models import Avg
+from django.db.models import Avg, Max
 from django.http import HttpResponseBadRequest
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -193,7 +193,7 @@ class StudentListView(APIView):
 
 
 def get_avg_mark(course_id, composition_id):
-    return Repetition.objects.filter(course_id=course_id, composition_id=composition_id).aggregate(Avg('mark'))[
+    return Repetition.objects.filter(course_id=course_id, composition_id=composition_id).aggregate(Max('mark'))[
         'mark__avg']
 
 
