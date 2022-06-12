@@ -194,7 +194,7 @@ class StudentListView(APIView):
 
 def get_avg_mark(course_id, composition_id):
     return Repetition.objects.filter(course_id=course_id, composition_id=composition_id).aggregate(Max('mark'))[
-        'mark__avg']
+        'mark__max']
 
 
 class StudentInfoView(APIView):
